@@ -1,7 +1,7 @@
 from data import get_data_from_file, get_data_from_file_as_int_list, header_line
 
 DAY = 'x'
-data = get_data_from_file_as_int_list(f"day{DAY}.input")
+data = get_data_from_file(f"day{DAY}.input")
 print(f'transformed data for solution')
 print(data)
 print(header_line)
