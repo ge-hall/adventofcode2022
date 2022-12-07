@@ -9,9 +9,7 @@ print(header_line)
 def solve_part1():
     print(header_line)
     print(f'solution part 1')
-
     # solution code
-
     print(header_line)
 
 def solve_part2():
