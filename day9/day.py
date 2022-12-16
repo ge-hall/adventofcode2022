@@ -1,6 +1,6 @@
 from data import get_data_from_file, get_data_from_file_as_int_list, header_line
 
-DAY = 'x'
+DAY = 9
 data = get_data_from_file(f"day{DAY}.input")
 print(f'transformed data for solution')
 print(data)
