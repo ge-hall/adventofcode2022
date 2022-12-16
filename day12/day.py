@@ -1,3 +1,5 @@
+from collections import deque
+
 from data import get_data_from_file, get_data_from_file_as_int_list, header_line
 
 DAY = 12
@@ -20,12 +22,11 @@ stepLimit = 10
 maxPath = 0
 
 
-
 def move(heightMap, old_pos, visited):
     global minPath, maxPath
     # debug step limit
     global stepLimit
-    stepLimit -=1
+    stepLimit -= 1
     # if stepLimit <= 0:
     #     return
 
@@ -81,33 +82,60 @@ def move(heightMap, old_pos, visited):
         move(heightMap, m, new_visited)
 
 
+alpha = 'abcdefghijklmnopqrstuvwxyzS'
+
+
+def bfs(map, pos):
+    w, h = len(map[0]), len(map)
+    q = deque([[pos]])
+    seen = {pos}
+    while q:
+        path = q.popleft()
+        x, y = path[-1]
+        if map[y][x] == "E":
+            return path
+        e = alpha.index(map[y][x])
+        # print(f'path {path}')
+        for x2, y2 in [(d[0] + path[-1][0], d[1] + path[-1][1]) for d in DIR]:  # [(x+1,y), (x-1,y), (x,y+1), (x,y-1)]:
+            if 0 <= x2 < w and 0 <= y2 < h and (x2, y2) not in seen:
+                e2 = alpha.index(map[y2][x2]) if map[y2][x2] != "E" else 25
+                if e2 <= e + 1:
+                    q.append(path + [(x2, y2)])
+                    seen.add((x2, y2))
+
+
 def solve_part1():
     print(header_line)
     print(f'solution part 1')
 
     # solution code
     W = H = 0
-    heightMap = [list(mapLine) for mapLine in data.splitlines()]
-    print(heightMap)
+    heightMap = [[c for c in line] for line in data.splitlines()]
+    for row in heightMap:
+        print(row)
 
     # heightMap dimensions
     W = len(heightMap[0])
     H = len(heightMap)
-    for r in range(H):
-        for c in range(W):
-            print(heightMap[r][c], end='')
-        print()
+    # for r in range(H):
+    #     for c in range(W):
+    #         print(heightMap[r][c], end='')
+    #     print()
     # navigate
     # find start pos
-    S = (0,0)
-    for r in range(len(heightMap)):
-        for c in range(len(heightMap[r])):
-            if heightMap[r][c] == 'S':
-                S = tuple([r, c])
+    S = (0, 0)
+    for y in range(len(heightMap)):
+        for x in range(len(heightMap[y])):
+            if heightMap[y][x] == 'S':
+                S = (x, y)
     pos = S
     visited = [pos]
-    pos = move(heightMap, pos, visited)
-    print(f' result = {minPath}')
+    print(f'Starting at {pos}')
+    # recursive move not working going to try bfs
+    # pos = move(heightMap, pos, visited)
+    result = bfs(heightMap, S)
+    print(f'found {len(result) - 1} steps')
+    print(result)
 
     print(header_line)
 
@@ -117,9 +145,37 @@ def solve_part2():
     print(f'solution part 2')
     # solution code
 
+    W = H = 0
+    heightMap = [[c for c in line] for line in data.splitlines()]
+    for row in heightMap:
+        print(row)
+
+    # heightMap dimensions
+    W = len(heightMap[0])
+    H = len(heightMap)
+    # for r in range(H):
+    #     for c in range(W):
+    #         print(heightMap[r][c], end='')
+    #     print()
+    # navigate
+    # find start pos
+    S = (0, 0)
+    for y in range(len(heightMap)):
+        for x in range(len(heightMap[y])):
+            if heightMap[y][x] == 'S':
+                S = (x, y)
+    pos = S
+    visited = [pos]
+    print(f'Starting at {pos}')
+    # recursive move not working going to try bfs
+    # pos = move(heightMap, pos, visited)
+    starts = [(x, y) for y in range(len(heightMap)) for x in range(len(heightMap[y])) if heightMap[y][x] == 'a']
+    result = min([len(bfs(heightMap, s)) - 1 for s in starts if bfs(heightMap, s)])
+    print(f'found {result} steps')
+    print(result)
     print(header_line)
 
 
 if __name__ == '__main__':
-    solve_part1()
-    # solve_part2()
+    # solve_part1()
+    solve_part2()
