@@ -48,11 +48,12 @@ def parse_list(llist: list, rlist: list) -> bool:
         scalarList = not list_has_nesting(llist[i]) and not list_has_nesting(rlist[i])
 
         if scalarList:
-            if not test_list(llist[i], rlist[i]):
-                return False
+            return test_list(llist[i], rlist[i])
+
+
         else:
-            if not parse_list(llist[i], rlist[i]):
-                return False
+            return parse_list(llist[i], rlist[i])
+
 
 
 
