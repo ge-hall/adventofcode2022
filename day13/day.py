@@ -26,7 +26,7 @@ def parse_list(llist: list, rlist: list) -> bool:
     if len(llist) == 0:
         return True
     if type(llist[0]) == int and type(rlist[0]) == list:
-        llist = [llist]
+        llist[0] = [llist[0]]
     valid = True
     for i in range(len(llist)):
         consumerIndex = i
@@ -37,18 +37,18 @@ def parse_list(llist: list, rlist: list) -> bool:
         if type(llist[i]) == int and type(rlist[i]) == list:
             llist[i] = [llist[i]]
         if type(llist[i]) == int and type(rlist[i]) == int:
-            rlist[i] = [rlist[i]]
-            llist[i] = [llist[i]]
+            if llist[i] < rlist[i]:
+                return True
+            elif llist[i] > rlist[i]:
+                return False
+            else:
+                continue
+
 
         scalarList = not list_has_nesting(llist[i]) and not list_has_nesting(rlist[i])
 
         if scalarList:
             if not test_list(llist[i], rlist[i]):
-                return False
-        elif type(llist[i]) == int and type(rlist[i]) == int:
-            if llist[i] < rlist[i]:
-                return True
-            elif llist[i] > rlist[i]:
                 return False
         else:
             if not parse_list(llist[i], rlist[i]):
