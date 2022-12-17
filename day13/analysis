@@ -1,0 +1,19 @@
+[[[],0,10],[[[8],[4,0,1],[5],[7],0],8],[9,8,0,8,9],[[],[[0]],1,7,[9,6,[7],[1,1],6]],[[4,[6,5],[3,9,9,8,8]],[[],[10,5,5,7,3],5,5],9,5,2]]
+[[8,2,[1,4,9,9],6,6],[],[[3,[3,5,3,10],10,[],[7,0,3,1]]],[[[]],6,[[10,6]]],[[2,3,[4,2,4,6],[10,5],[7]],[[3,8,2,4,7],9,[2],[]],10,[[],8,9],[[4],[3,9],6,[9,10,2],6]]]
+[[],0,10]
+[8,2,[1,4,9,9],6,6]
+[] [8] return True
+should not continue to process
+
+
+    If both values are integers, the lower integer should come first. If the left integer is lower than the right integer,
+     the inputs are in the right order. If the left integer is higher than the right integer, the inputs are not in the right order.
+     Otherwise, the inputs are the same integer; continue checking the next part of the input.
+
+    If both values are lists, compare the first value of each list, then the second value, and so on. If the left list runs
+     out of items first, the inputs are in the right order. If the right list runs out of items first, the inputs are not in
+      the right order. If the lists are the same length and no comparison makes a decision about the order, continue checking
+      the next part of the input.
+    If exactly one value is an integer, convert the integer to a list which contains that integer as its only value, then retry
+     the comparison. For example, if comparing [0,0,0] and 2, convert the right value to [2] (a list containing 2); the result is
+      then found by instead comparing [0,0,0] and [2].

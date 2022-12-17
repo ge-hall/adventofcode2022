@@ -5,8 +5,8 @@ def get_data_from_file(filename):
         data = f.read().rstrip()
     print(header_line)
     print(f"reading from file {filename}")
-    print(data)
-    print(header_line)
+    # print(data)
+    # print(header_line)
     return data
 
 
