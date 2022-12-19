@@ -20,54 +20,61 @@ def parse_list(llist: list, rlist: list) -> bool:
     # If exactly one value is an integer, convert the integer to a list
     # which contains that integer as its only value, then retry the comparison
     consumerIndex = 0
-
+    # check for None list
+    if rlist == llist:
+        return None
     if len(rlist) == 0:
         return False
     if len(llist) == 0:
-        return True
+        return None
     if type(llist[0]) == int and type(rlist[0]) == list:
         llist[0] = [llist[0]]
-    valid = True
+    valid = None
     for i in range(len(llist)):
-        consumerIndex = i
-        if i >= len(rlist):
+        try:
+            if type(llist[i]) == list and type(rlist[i]) == int:
+                rlist[i] = [rlist[i]]
+        except:
             return False
-        if type(llist[i]) == list and type(rlist[i]) == int:
-            rlist[i] = [rlist[i]]
-        if type(llist[i]) == int and type(rlist[i]) == list:
-            llist[i] = [llist[i]]
+        try:
+            if type(llist[i]) == int and type(rlist[i]) == list:
+                llist[i] = [llist[i]]
+        except:
+            return False
+
         if type(llist[i]) == int and type(rlist[i]) == int:
             if llist[i] < rlist[i]:
-                return True
+                return None
             elif llist[i] > rlist[i]:
                 return False
             else:
                 continue
 
-
-        scalarList = not list_has_nesting(llist[i]) and not list_has_nesting(rlist[i])
-
-        if scalarList:
-            return test_list(llist[i], rlist[i])
-
-
+        sorted = parse_list(llist[i], rlist[i])
+        if sorted == False:
+            return False
+        if sorted:
+            return True
         else:
-            return parse_list(llist[i], rlist[i])
+            continue
 
-
-
-
+            # missing the case when a list runs out so need to switch to -1,0,1
+            # when running
+    if(len(llist) < len(rlist)):
+        valid = True
+    elif(len(llist) > len(rlist)):
+        valid = False
     return valid
 
 
-def test_list(llist: list, rlist: list) -> bool:
+def is_sorted(llist: list, rlist: list) -> bool:
     try:
         for i in range(len(llist)):
             if llist[i] < rlist[i]:
                 return True
             elif llist[i] > rlist[i]:
                 return False
-        return True
+        return None
 
     except:
         return False
@@ -97,16 +104,17 @@ def solve_part1():
         print('===========================================')
         # print(f'left_packet: {left_packet}')
         # test is pairs is just two lists no nesting
-        scalarList = not list_has_nesting(left_packet) and not list_has_nesting(right_packet)
+        # scalarList = not list_has_nesting(left_packet) and not list_has_nesting(right_packet)
         # print(f'scalarList: {scalarList}')
-        if scalarList:
-            if test_list(left_packet, right_packet):
-                winners.append(n+1)
-                print('*** won as scalar list ***')
-        else:
-            if parse_list(left_packet, right_packet):
-                winners.append(n+1)
-                print('*** won as nested list ***')
+        # if scalarList:
+        #     if is_sorted(left_packet, right_packet):
+        #         winners.append(n+1)
+        #         print('*** won as scalar list ***')
+        # else:
+        result = parse_list(left_packet, right_packet)
+        if result or result == None:
+            winners.append(n + 1)
+            print('*** won as nested list ***')
     print(winners)
     print(sum(winners))
 
