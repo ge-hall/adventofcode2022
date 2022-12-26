@@ -3,8 +3,8 @@ from data import get_data_from_file, header_line
 import numpy as np
 
 DAY = 14
-data = get_data_from_file(f"sample")
-# data = get_data_from_file(f"day{DAY}.input")
+# data = get_data_from_file(f"sample")
+data = get_data_from_file(f"day{DAY}.input")
 print(f"transformed data for solution")
 print(data)
 print(header_line)
@@ -67,6 +67,26 @@ def buildCaveSystem(path_lines, minX, maxX, minY, maxY):
         for coord in path:
             # print(f"{coord[1]}, {coord[0]}")
             cave_system[coord[1]][coord[0] - minX] = "#"
+    return cave_system
+
+
+def buildCaveSystem2(path_lines, minX, maxX, minY, maxY):
+    print(f"buildCaveSystem", end="\n\n")
+    Xoffset = maxY - minY + 1
+    cave_system = np.zeros((maxY + 3, Xoffset * 3), dtype=str)
+    print(f"cave_system.shape = {cave_system.shape}", end="\n\n")
+    for y in range(cave_system.shape[0]):
+        for x in range(cave_system.shape[1]):
+            cave_system[y][x] = "."
+    print()
+    for path in path_lines:
+        for coord in path:
+            # print(f"{coord[1]}, {coord[0]}")
+            cave_system[coord[1]][coord[0] - minX + Xoffset] = "#"
+    # add floor
+    for x in range(cave_system.shape[1]):
+        cave_system[cave_system.shape[0] - 1][x] = "#"  # floor:w
+
     return cave_system
 
 
@@ -199,12 +219,84 @@ def solve_part2():
     print(header_line)
     print(f"solution part 2")
     # solution code
+    # each line is a path
+    # each path is a list of coordinates
+    # each coordinate is a tuple (x, y)
+    paths = [path.split(" -> ") for path in [line for line in data.splitlines()]]
+    print(f"paths: {paths}")
+    print(header_line, end="\n\n")
 
+    #
+    # for coords in paths:
+    #     for i, coord in enumerate(coords):
+    #         print(f"list {i} = {tuple(coord.split(','))}", end=",")
+    #     print()
+    # print(paths)
+    # print()
+    # print(f"result = ")
+
+    print("convert path coords to tuples")
+    path_lines = []
+    for path in paths:
+        print(path)
+        lines = []
+        for coord in path:
+            print(coord)
+            converted = tuple(int(x) for x in coord.split(","))
+            lines.append(converted)
+        path_lines.append(lines)
+    print()
+    print(f"path_lines{path_lines}", end="\n\n")
+
+    # get dimensions for map
+    # this is the width and height of the map
+    minX: int = 2417000
+    minY: int = 2417000
+    maxX: int = 0
+    maxY: int = 0
+
+    for path in path_lines:
+        for coord in path:
+            if int(coord[0]) < int(minX):
+                minX = int(coord[0])
+            if int(coord[0]) > int(maxX):
+                maxX = int(coord[0])
+            if int(coord[1]) < int(minY):
+                minY = int(coord[1])
+            if int(coord[1]) > int(maxY):
+                maxY = int(coord[1])
+
+    print(f"minX = {minX}, maxX = {maxX}, minY = {minY}, maxY = {maxY}", end="\n\n")
+
+    # create points between paths
+    new_paths = createPaths(path_lines)
+    # print(f"new_paths = {new_paths}", end="\n\n")
+
+    # draw cave map
+    caveSystem = buildCaveSystem2(new_paths, minX, maxX, minY, maxY)
+    print(caveSystem)
+
+    # sand sand = (500,0)
+    Xoffset = maxY - minY + 1
+
+    sand = (500 - minX + Xoffset, 0)
+    abyss = 0
+    grains = 0
+    while not abyss:
+        abyss, caveSystem = pourSand(sand, caveSystem)
+        print(f"pouring sand {grains}")
+        if not abyss:
+            grains += 1
+    print(caveSystem)
+    with open("outfile.txt", "w") as fp:
+        for r in caveSystem:
+            fp.write("".join(r) + "\n")
+    print(f"grains = {grains}")
     print()
     print(f"result = ")
     print(header_line)
 
 
 if __name__ == "__main__":
-    solve_part1()
-    # solve_part2()
+    # solve_part1()
+    solve_part2()
