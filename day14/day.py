@@ -1,6 +1,4 @@
-from collections.abc import Mapping
-from data import get_data_from_file, get_data_from_file_as_int_list, header_line
-import math
+from data import get_data_from_file, header_line
 
 DAY = 14
 data = get_data_from_file(f"sample")
@@ -9,7 +7,19 @@ print(f"transformed data for solution")
 print(data)
 print(header_line)
 
-
+#   4     5  5
+#   9     0  0
+#   4     0  3
+# 0 ......+...
+# 1 ..........
+# 2 ..........
+# 3 ..........
+# 4 ....#...##
+# 5 ....#...#.
+# 6 ..###...#.
+# 7 ........#.
+# 8 ........#.
+# 9 #########.
 def printCaveSystem(path_lines, minX, maxX, minY, maxY):
     print(f"printCaveSystem")
     for y in range(minY, maxY + 1):
@@ -26,21 +36,20 @@ def solve_part1():
     # each line is a path
     # each path is a list of coordinates
     # each coordinate is a tuple (x, y)
-    paths = [
-        coords
-        for coords in [
-            path.split(" -> ")
-            for path in [line for i, line in enumerate(data.splitlines())]
-        ]
-    ]
-    for coords in paths:
-        for i, coord in enumerate(coords):
-            print(f"list {i} = {tuple(coord.split(','))}", end=",")
-        print()
-    print(paths)
-    print()
-    print(f"result = ")
+    paths = [path.split(" -> ") for path in [line for line in data.splitlines()]]
+    print(f"paths: {paths}")
+    print(header_line, end="\n\n")
 
+    #
+    # for coords in paths:
+    #     for i, coord in enumerate(coords):
+    #         print(f"list {i} = {tuple(coord.split(','))}", end=",")
+    #     print()
+    # print(paths)
+    # print()
+    # print(f"result = ")
+
+    print("convert path coords to tuples")
     path_lines = []
     for path in paths:
         print(path)
@@ -49,8 +58,9 @@ def solve_part1():
             print(coord)
             lines.append(tuple(coord.split(",")))
         path_lines.append(lines)
+    print()
+    print(f"path_lines{path_lines}", end="\n\n")
 
-    print(path_lines)
     # get dimensions for map
     # this is the width and height of the map
     minX: int = 2417000
@@ -59,11 +69,7 @@ def solve_part1():
     maxY: int = 0
 
     for path in path_lines:
-        print(path)
         for coord in path:
-            print(coord)
-            print(coord[0])
-            print(coord[1])
             if int(coord[0]) < int(minX):
                 minX = int(coord[0])
             if int(coord[0]) > int(maxX):
@@ -73,7 +79,7 @@ def solve_part1():
             if int(coord[1]) > int(maxY):
                 maxY = int(coord[1])
 
-    print(f"minX = {minX}, maxX = {maxX}, minY = {minY}, maxY = {maxY}")
+    print(f"minX = {minX}, maxX = {maxX}, minY = {minY}, maxY = {maxY}", end="\n\n")
 
     # draw map
     # map is a 2D array
